@@ -17,27 +17,25 @@ advocate_details = []
 
 total_pages = 551
 
-# Find the total number of advocate rows in the table
+
 total_rows = len(driver.find_elements(By.CSS_SELECTOR, "tbody > tr"))
 
 
 
 for page in range(total_pages):
-    # Find the total number of advocate rows on the current page
+ 
     total_rows = len(WebDriverWait(driver, 10).until(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, "tbody > tr"))
     ))
     # Scrape the current page
     for index in range(total_rows):
-        # Re-find all advocate rows on each iteration
+       
         advocate_rows = WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, "tbody > tr"))
         )
 
-        # Get the specific row
         row = advocate_rows[index]
 
-        # Extract the name
         name = row.find_element(By.CSS_SELECTOR, "td:nth-of-type(2) a").text
 
         # Navigate to the detail page
@@ -50,7 +48,6 @@ for page in range(total_pages):
                 EC.presence_of_element_located((By.XPATH, telephone_xpath))
             )
             telephone_full_text = driver.find_element(By.XPATH, telephone_xpath).text
-            # Splitting the text and taking the second part to get the actual telephone number
             telephone = telephone_full_text.split('\n')[1] if '\n' in telephone_full_text else telephone_full_text
         except TimeoutException:
             telephone = 'Not Available'
@@ -64,7 +61,6 @@ for page in range(total_pages):
                 EC.presence_of_element_located((By.XPATH, email_xpath))
             )
             email_full_text = driver.find_element(By.XPATH, email_xpath).text
-            # Splitting the text and taking the second part to get the actual email
             email = email_full_text.split('\n')[1] if '\n' in email_full_text else email_full_text
         except TimeoutException:
             email = 'Not Available'
@@ -77,7 +73,6 @@ for page in range(total_pages):
                 EC.presence_of_element_located((By.XPATH, mobile_xpath))
             )
             mobile_full_text = driver.find_element(By.XPATH, mobile_xpath).text
-            # Splitting the text and taking the second part to get the actual mobile number
             mobile = mobile_full_text.split('\n')[1] if '\n' in mobile_full_text else mobile_full_text
         except TimeoutException:
             mobile = 'Not Available'
@@ -87,7 +82,6 @@ for page in range(total_pages):
         # Store the details
         advocate_details.append({'Name': name, 'Telephone': telephone,'Mobile': mobile, 'Email': email})
 
-        # Navigate back to the main list
         driver.get(url)
 
     # Navigate to the next page
@@ -111,7 +105,6 @@ for detail in advocate_details:
 #csv export
 csv_file_path = 'advocate_details.csv'
 
-# Write the data to a CSV file
 with open(csv_file_path, mode='w', newline='', encoding='utf-8') as file:
     writer = csv.DictWriter(file, fieldnames=['Name', 'Telephone', 'Mobile', 'Email'])
     writer.writeheader()
